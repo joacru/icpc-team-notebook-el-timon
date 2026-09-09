@@ -1,0 +1,14 @@
+/build/
+*.aux
+*.log
+*.gch
+a.out
+header.tmp
+.vscode
+
+vasito.pdf
+vasito.aux
+vasito.log
+vasito.out
+vasito.toc
+**/a.out
