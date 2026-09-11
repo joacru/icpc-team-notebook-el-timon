@@ -1,3 +1,8 @@
+/**
+ * Author: -
+ * Description: -
+ */
+
 typedef ll tc;
 const tc is_query=-(1LL<<62); // special value for query
 struct Line {
@@ -9,7 +14,7 @@ struct Line {
 		if(rhs.b!=is_query)return m<rhs.m;
 		const Line *s=succ(it);
 		if(!s)return 0;
-		return b-s->b<(s->m-m)*rhs.m;
+        return (__int128)(b-s->b) < (__int128)(s->m-m)*rhs.m;
 	}
 };
 struct HullDynamic : public multiset<Line> { // for maximum
@@ -21,7 +26,7 @@ struct HullDynamic : public multiset<Line> { // for maximum
 		}
 		iterator x=prev(y);
 		if(z==end())return y->m==x->m&&y->b<=x->b;
-		return (x->b-y->b)*(z->m-y->m)>=(y->b-z->b)*(y->m-x->m);
+        return (__int128)(x->b-y->b)*(z->m-y->m) >= (__int128)(y->b-z->b)*(y->m-x->m);
 	}
 	iterator next(iterator y){return ++y;}
 	iterator prev(iterator y){return --y;}
