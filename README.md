@@ -1,6 +1,6 @@
-# El vasito #
+# El timon #
 
-ICPC Team Notebook. Team "UNC - Gracias Demetrio".
+ICPC Team Notebook. Team "UNC - Los Marineros".
 
 ## Compile
 ``pdflatex vasito.tex``
