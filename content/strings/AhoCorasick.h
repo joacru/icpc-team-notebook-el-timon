@@ -27,11 +27,11 @@ struct AhoCorasick {
 	vector<Node> N;
 	vi backp;
 	void insert(string& s, int j) {
-		assert(!s.empty());
+		assert(SZ(s));
 		int n = 0;
 		for (char c : s) {
 			int& m = N[n].next[c - first];
-			if (m == -1) { n = m = sz(N); N.emplace_back(-1); }
+			if (m == -1){n=m=SZ(N);N.emplace_back(-1);}
 			else n = m;
 		}
 		if (N[n].end == -1) N[n].start = j;
@@ -40,14 +40,14 @@ struct AhoCorasick {
 		N[n].nmatches++;
 	}
 	AhoCorasick(vector<string>& pat) : N(1, -1) {
-		rep(i,0,sz(pat)) insert(pat[i], i);
-		N[0].back = sz(N);
+		forn(i,0,SZ(pat)) insert(pat[i], i);
+		N[0].back=SZ(N);
 		N.emplace_back(0);
 
 		queue<int> q;
-		for (q.push(0); !q.empty(); q.pop()) {
+		for (q.push(0);SZ(q);q.pop()) {
 			int n = q.front(), prev = N[n].back;
-			rep(i,0,alpha) {
+			forn(i,0,alpha) {
 				int &ed = N[n].next[i], y = N[prev].next[i];
 				if (ed == -1) ed = y;
 				else {
@@ -72,11 +72,11 @@ struct AhoCorasick {
 	}
 	vector<vi> findAll(vector<string>& pat, string word) {
 		vi r = find(word);
-		vector<vi> res(sz(word));
-		rep(i,0,sz(word)) {
+		vector<vi> res(SZ(word));
+		forn(i,0,SZ(word)) {
 			int ind = r[i];
 			while (ind != -1) {
-				res[i - sz(pat[ind]) + 1].push_back(ind);
+				res[i-SZ(pat[ind])+1].push_back(ind);
 				ind = backp[ind];
 			}
 		}
