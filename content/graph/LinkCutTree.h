@@ -1,102 +1,102 @@
 /**
- * Author: Simon Lindholm
- * Date: 2016-07-25
- * Source: https://github.com/ngthanhtrung23/ACM_Notebook_new/blob/master/DataStructure/LinkCutTree.h
+ * Author: el vasito
+ * Date: 2026-10-12
+ * Source: https://github.com/mhunicken/icpc-team-notebook-el-vasito/blob/master/data_structures/linkcut2.cpp
  * Description: Represents a forest of unrooted trees. You can add and remove
- * edges (as long as the result is still a forest), and check whether
- * two nodes are in the same tree.
+ * edges (as long as the result is still a forest).
+ * Path queries and updates. Assoc ops. Be careful with no comm ops.
  * Time: All operations take amortized O(\log N).
- * Status: Stress-tested a bit for N <= 20
+ * Status: faith in vasito
  */
 #pragma once
-
-struct Node { // Splay tree. Root's pp contains tree's parent.
-	Node *p = 0, *pp = 0, *c[2];
-	bool flip = 0;
-	Node() { c[0] = c[1] = 0; fix(); }
-	void fix() {
-		if (c[0]) c[0]->p = this;
-		if (c[1]) c[1]->p = this;
-		// (+ update sum of subtree elements etc. if wanted)
-	}
-	void pushFlip() {
-		if (!flip) return;
-		flip = 0; swap(c[0], c[1]);
-		if (c[0]) c[0]->flip ^= 1;
-		if (c[1]) c[1]->flip ^= 1;
-	}
-	int up() { return p ? p->c[1] == this : -1; }
-	void rot(int i, int b) {
-		int h = i ^ b;
-		Node *x = c[i], *y = b == 2 ? x : x->c[h], *z = b ? y : x;
-		if ((y->p = p)) p->c[up()] = y;
-		c[i] = z->c[i ^ 1];
-		if (b < 2) {
-			x->c[h] = y->c[h ^ 1];
-			y->c[h ^ 1] = x;
-		}
-		z->c[i ^ 1] = this;
-		fix(); x->fix(); y->fix();
-		if (p) p->fix();
-		swap(pp, y->pp);
-	}
-	void splay() { /// Splay this up to the root. Always finishes without flip set.
-		for (pushFlip(); p; ) {
-			if (p->p) p->p->pushFlip();
-			p->pushFlip(); pushFlip();
-			int c1 = up(), c2 = p->up();
-			if (c2 == -1) p->rot(c1, 2);
-			else p->p->rot(c2, c1 != c2);
-		}
-	}
-	Node* first() { /// Return the min element of the subtree rooted at this, splayed to the top.
-		pushFlip();
-		return c[0] ? c[0]->first() : (splay(), this);
-	}
+// for sum x.comp(y) is just x+y and x.comp(t) is x*t
+const T NDEL=0,NVAL=0; // no lazy, null
+inline T mOp(T x, T y){return x.comp(y);} // join when upd
+inline T qOp(T lv,T rv){return lv.comp(rv);} // join when qry
+inline T dOnSeg(T d,int len){return d==NDEL?NDEL:d.comp(len);}
+inline T joinD(T d1, T d2){
+  if(d1==NDEL)return d2;
+  if(d2==NDEL)return d1;
+  return mOp(d1,d2);}
+inline T joinVD(T v, T d){return d==NDEL?v:mOp(v,d);}
+// if the upd overwrites the current values
+// inline T joinVD(T v, T d){return d==NDEL?v:d;}
+typedef struct Node *node;
+struct Node{
+  int sz=1;bool rev=0;
+  T nVal, tVal, d=NDEL;
+  node c[2],p=0;
+  Node(T v): nVal(v),tVal(v){c[0]=c[1]=0;}
+  bool isRoot(){return !p||(p->c[0]!=this&&p->c[1]!=this);}
+  void push(){
+    if(rev){
+      rev=0;swap(c[0], c[1]);
+	  // nVal.rev();tVal().rev(); // if no comm
+      forn(x,0,2)if(c[x])c[x]->rev^=1;
+    }
+    nVal=joinVD(nVal, d);tVal=joinVD(tVal, dOnSeg(d, sz));
+    forn(x,0,2)if(c[x])c[x]->d=joinD(c[x]->d, d);
+    d=NDEL;
+  }
+  void upd();
 };
-
-struct LinkCut {
-	vector<Node> node;
-	LinkCut(int N) : node(N) {}
-
-	void link(int u, int v) { // add an edge (u, v)
-		assert(!connected(u, v));
-		makeRoot(&node[u]);
-		node[u].pp = &node[v];
-	}
-	void cut(int u, int v) { // remove an edge (u, v)
-		Node *x = &node[u], *top = &node[v];
-		makeRoot(top); x->splay();
-		assert(top == (x->pp ?: x->c[0]));
-		if (x->pp) x->pp = 0;
-		else {
-			x->c[0] = top->p = 0;
-			x->fix();
-		}
-	}
-	bool connected(int u, int v) { // are u, v in the same tree?
-		Node* nu = access(&node[u])->first();
-		return nu == access(&node[v])->first();
-	}
-	void makeRoot(Node* u) { /// Move u to root of represented tree.
-		access(u);
-		u->splay();
-		if(u->c[0]) {
-			u->c[0]->p = 0;
-			u->c[0]->flip ^= 1;
-			u->c[0]->pp = u;
-			u->c[0] = 0;
-			u->fix();
-		}
-	}
-	Node* access(Node* u) { /// Move u to root aux tree. Return the root of the root aux tree.
-		u->splay();
-		while (Node* pp = u->pp) {
-			pp->splay(); u->pp = 0;
-			if (pp->c[1]) {
-				pp->c[1]->p = 0; pp->c[1]->pp = pp; }
-			pp->c[1] = u; pp->fix(); u = pp;
-		}
-		return u;
-	}
-};
+int getSize(node r){return r?r->sz:0;}
+T getPV(node r){if(!r) return NVAL;r->push();return r->tVal;}
+void Node::upd(){
+  tVal = qOp(qOp(getPV(c[0]), joinVD(nVal, d)), getPV(c[1]));
+  sz=1+getSize(c[0])+getSize(c[1]); }
+void conn(node c,node p,int il){
+	if(c)c->p=p;
+	if(il>=0)p->c[!il]=c;}
+void rotate(node x){
+  node p=x->p,g=p->p;
+  bool gCh=p->isRoot(),isl=x==p->c[0];
+  conn(x->c[isl],p,isl); conn(p,x,!isl);
+  conn(x,g,gCh?-1:(p==g->c[0])); p->upd();
+}
+void spa(node x){//splay
+  while(!x->isRoot()){
+    node p=x->p,g=p->p;
+    if(!p->isRoot())g->push();
+    p->push();x->push();
+    if(!p->isRoot())rotate((x==p->c[0])==(p==g->c[0])? p : x);
+    rotate(x);
+  }
+  x->push();x->upd();
+}
+node exv(node x){//expose
+  node last=0;
+  for(node y=x; y; y=y->p)spa(y),y->c[0]=last,y->upd(),last=y;
+  spa(x);
+  return last;
+}
+void mkR(node x){exv(x);x->rev^=1;}//makeRoot
+node getR(node x){exv(x);
+	while(x->c[1])x=x->c[1];
+	spa(x);return x;}
+node lca(node x,node y){exv(x); return exv(y);}
+bool path(node x,node y){exv(x);exv(y);return x==y?1:x->p!=0;}
+void link(node x,node y){mkR(x); x->p=y;}
+void cut(node x,node y){mkR(x);exv(y);y->c[1]->p=0;y->c[1]=0;}
+node father(node x){
+  exv(x); node r=x->c[1];
+  if(!r)return 0;
+  r->push();
+  while(r->c[0])r=r->c[0],r->push();
+  return r;
+}
+void cut(node x){ // cuts x from father keeping tree root
+  exv(father(x));x->p=0;}
+T qry(node x,node y){mkR(x);exv(y);return getPV(y);}
+void upd(node x,T d){exv(x);x->nVal=d;x->upd();} // replace
+void upd(node x,node y,T d){mkR(x);exv(y);y->d=joinD(y->d,d);}
+node lift_rec(node x, int t){
+  if(!x) return 0;
+  x->push();
+  if(t==getSize(x->c[0])) return lift_rec(x->c[0],t);
+  return lift_rec(x->c[1],t-getSize(x->c[0])-1);
+}
+node lift(node x, int t){ // t-th ancestor of x (lift(x,1) is x's father)
+	exv(x);return lift_rec(x,t);}
+int depth(node x){ // distance from x to its tree root
+	exv(x);return getSize(x)-1;}
