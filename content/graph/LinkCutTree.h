@@ -9,11 +9,11 @@
  * Status: faith in vasito
  */
 #pragma once
-// for sum x.comp(y) is just x+y and x.comp(t) is x*t
+// for composition use x.comp(y), lv.comp(rv), d.comp(len)
 const T NDEL=0,NVAL=0; // no lazy, null
-inline T mOp(T x, T y){return x.comp(y);} // join when upd
-inline T qOp(T lv,T rv){return lv.comp(rv);} // join when qry
-inline T dOnSeg(T d,int len){return d==NDEL?NDEL:d.comp(len);}
+inline T mOp(T x, T y){return x+y;} // join when upd
+inline T qOp(T lv,T rv){return lv+rv;} // join when qry
+inline T dOnSeg(T d,int len){return d==NDEL?NDEL:d*len;}
 inline T joinD(T d1, T d2){
   if(d1==NDEL)return d2;
   if(d2==NDEL)return d1;
@@ -30,8 +30,8 @@ struct Node{
   bool isRoot(){return !p||(p->c[0]!=this&&p->c[1]!=this);}
   void push(){
     if(rev){
-      rev=0;swap(c[0], c[1]);
-	  // nVal.rev();tVal().rev(); // if no comm
+      rev=0;swap(c[0],c[1]);
+	    // nVal.rev();tVal().rev(); // if no comm
       forn(x,0,2)if(c[x])c[x]->rev^=1;
     }
     nVal=joinVD(nVal, d);tVal=joinVD(tVal, dOnSeg(d, sz));
@@ -59,7 +59,7 @@ void spa(node x){//splay
     node p=x->p,g=p->p;
     if(!p->isRoot())g->push();
     p->push();x->push();
-    if(!p->isRoot())rotate((x==p->c[0])==(p==g->c[0])? p : x);
+    if(!p->isRoot())rotate((x==p->c[0])==(p==g->c[0])?p:x);
     rotate(x);
   }
   x->push();x->upd();

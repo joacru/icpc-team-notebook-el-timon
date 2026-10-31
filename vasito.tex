@@ -2,17 +2,17 @@
 \input{preamble.tex}
 \begin{document}
 % Gracias Demetrio
-\def\title{Universidad Nacional de Córdoba - Gracias Demetrio}
+\def\title{Universidad Nacional de Córdoba - Los Marineros}
 .\\[0.2cm]
-\centering{\LARGE\textbf{Gracias Demetrio}} \\[0.5cm]
-\centering{\includegraphics[width=5.5cm]{img/vasito.jpg}}
+\centering{\LARGE\textbf{Los Marineros}} \\[0.5cm]
+\centering{\includegraphics[width=5.5cm]{img/kane-face.png}}
 \tableofcontents\newpage
 
 \section{Data structures}
-\subsection{Segment tree}
-\cppfile{data_structures/segment_tree.cpp}
-\subsection{Segment tree - Lazy propagation}
-\cppfile{data_structures/segment_tree_lazy.cpp}
+% \subsection{Segment tree}
+% \cppfile{data_structures/segment_tree.cpp}
+% \subsection{Segment tree - Lazy propagation}
+% \cppfile{data_structures/segment_tree_lazy.cpp}
 \subsection{Segment tree - Persistence}
 \cppfile{data_structures/segment_tree_persistent.cpp}
 \subsection{Segment tree - 2D}
@@ -34,7 +34,8 @@
 \subsection{Treap (with node father)}
 \cppfile{data_structures/treap_implicit_father.cpp}
 \subsection{Link-Cut tree}
-\cppfile{data_structures/link_cut_tree.cpp}
+% \cppfile{data_structures/link_cut_tree.cpp}
+\cppfile{data_structures/linkcut3.cpp}
 \subsection{Convex hull trick (static)}
 \cppfile{data_structures/convexhull_trick.cpp}
 \subsection{Convex hull trick (dynamic)}
@@ -51,8 +52,8 @@
 \cppfile{graphs/toposort.cpp}
 \subsection{Kruskal (+ Union-Find)}
 \cppfile{graphs/kruskal.cpp}
-\subsection{Dijkstra}
-\cppfile{graphs/dijkstra.cpp}
+% \subsection{Dijkstra}
+% \cppfile{graphs/dijkstra.cpp}
 \subsection{Bellman-Ford}
 \cppfile{graphs/bellman_ford.cpp}
 \subsection{Floyd-Warshall}
@@ -126,6 +127,8 @@
 \cppfile{math/fft_operations.cpp}
 \subsection{Fast Hadamard Transform}
 \cppfile{math/fht.cpp}
+\subsection{Number Theoretic Transform}
+\cppfile{math/ntt.cpp}
 \subsection{Karatsuba}
 \cppfile{math/karatsuba.cpp}
 \subsection{Diophantine}
@@ -178,6 +181,8 @@
 \cppfile{geometry/minkowski_sum.cpp}
 \subsection{Delaunay triangulation}
 \cppfile{geometry/delaunay.cpp}
+\subsection{Tangents Convex Polygon}
+\cppfile{geometry/tangents_convex_polygon.cpp}
 
 \section{Strings}
 \subsection{KMP}
@@ -192,8 +197,8 @@
 \cppfile{strings/suffix_automaton.cpp}
 \subsection{Palindromic Tree}
 \cppfile{strings/palindromic_tree.cpp}
-\subsection{Suffix array (shorter but slower)}
-\cppfile{strings/suffix_array_slow.cpp}
+% \subsection{Suffix array (shorter but slower)}
+% \cppfile{strings/suffix_array_slow.cpp}
 \subsection{Suffix array}
 \cppfile{strings/suffix_array.cpp}
 \subsection{LCP (Longest Common Prefix)}
@@ -214,6 +219,8 @@
 \cppfile{flow/hungarian.cpp}
 \subsection{Dinic}
 \cppfile{flow/dinic.cpp}
+\subsection{Dinic with lower bound}
+\cppfile{flow/dinic_lower_bound.cpp}
 \subsection{Min cost max flow}
 \cppfile{flow/min_cost_max_flow.cpp}
 
@@ -230,7 +237,7 @@
 \cppfile{other/interactive_tester.py}
 \subsection{Max number of divisors up to 10\textsuperscript{n}}
 \cppfile{other/hcn.txt}
-\subsection{Template}
-\cppfile{other/template.cpp}
+% \subsection{Template}
+% \cppfile{other/template.cpp}
 
 \end{document}
